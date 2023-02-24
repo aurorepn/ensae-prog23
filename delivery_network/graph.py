@@ -63,15 +63,47 @@ class Graph:
     
 
     def get_path_with_power(self, src, dest, power):
-        #licomponents = connected_components(self)
-        #for component in licomponents:
-            #if src in component:
-                #if not dest in component:
-                    #return None
-                #else:
-                    #noeuds_atteignables = component
-
         
+        licomponents = connected_components(self)
+        for component in licomponents:
+            if src in component:
+                if not dest in component:
+                    return None
+                else:
+                    noeuds_atteignables = component
+
+
+        puissance = float("inf")
+
+
+        def parcours(noeud, noeuds_vus, compte):
+            noeuds_vus += [noeud]
+            for voisin in self.graph[noeud]:
+                if parcours(voisin, noeuds_vus, compte) < puissance:
+
+                noeud_etudie = voisin[0]
+                if
+
+# parcours renvoie le chemin et la puissance
+
+        parcours(src, [], 0)
+
+        ----------------
+
+        noeuds_vus = []
+
+        start = noeud
+        end = end
+        fonction(start, end, composantespasaccessibles) renvoie le trajet de start à end et renvoie le cout associé
+        l = liste vide
+        pour chque voisin du noeud pas encore vu
+        si voisin = arrivée -> l.append(power_min du trajet noeud/arrivee , [arrivee])
+        sinon -> on ajoute noeud a la liste des noeuds vus puis on ajoute à l : (cout obtenu par la fonction appliquee avec voisin comme depart + power_min du trajet noeud/voisin , [trajet obtenu par la fonction jusqua larrivée])
+        on regarde où est minimisée l (concernant la premiere composante des couples)
+        
+        
+        
+
 
         raise NotImplementedError
     
@@ -95,6 +127,8 @@ class Graph:
 
         return licomponents
 
+#cout de la fonction exploration : C(n,m) = O(1) + nb_voisins(s) * cout(exploration)
+#pour n sommets et m arêtes
 
 
     def connected_components_set(self):
