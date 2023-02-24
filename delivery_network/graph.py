@@ -40,6 +40,8 @@ class Graph:
                 output += f"{source}-->{destination}\n"
         return output
     
+#Ceci est un test
+
     def add_edge(self, node1, node2, power_min, dist=1):
         """
         Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
@@ -55,15 +57,44 @@ class Graph:
         dist: numeric (int or float), optional
             Distance between node1 and node2 on the edge. Default is 1.
         """
-        raise NotImplementedError
+        self.nb_edges += 1
+        self.graph[node1].append((node2, power_min, dist))
+        self.graph[node2].append((node1, power_min, dist))
     
 
     def get_path_with_power(self, src, dest, power):
+        #licomponents = connected_components(self)
+        #for component in licomponents:
+            #if src in component:
+                #if not dest in component:
+                    #return None
+                #else:
+                    #noeuds_atteignables = component
+
+        
+
         raise NotImplementedError
     
 
     def connected_components(self):
-        raise NotImplementedError
+        licomponents = []
+        noeuds_vus = {noeud:False for noeud in self.nodes}
+
+        def parcours_profondeur(noeud):
+            component = [noeud]
+            for voisin in self.graph[noeud]:
+                voisin = voisin[0]
+                if not noeuds_vus[voisin]:
+                    noeuds_vus[voisin] = True
+                    component += parcours_profondeur(voisin)
+            return component
+
+        for noeud in self.nodes:
+            if not noeuds_vus[noeud]:
+                licomponents.append(parcours_profondeur(noeud))
+
+        return licomponents
+
 
 
     def connected_components_set(self):
@@ -100,4 +131,21 @@ def graph_from_file(filename):
     G: Graph
         An object of the class Graph with the graph from file_name.
     """
-    raise NotImplementedError
+    with open(filename) as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        m = int(ligne1[1])
+        noeuds = [i for i in range(1, n+1)]
+        graphe = Graph(noeuds)
+        for i in range(m):
+            ligne = file.readline().split()
+            noeud1 = int(ligne[0])
+            noeud2 = int(ligne[1])
+            power_min = int(ligne[2])
+            if len(ligne) > 3:
+                dist = int(ligne[3])
+                graphe.add_edge(noeud1, noeud2, power_min, dist)
+            else:
+                graphe.add_edge(noeud1, noeud2, power_min)
+
+    return graphe
