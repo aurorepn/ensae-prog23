@@ -73,34 +73,64 @@ class Graph:
                     noeuds_atteignables = component
 
 
-        puissance = float("inf")
+        #puissance = float("inf")
 
 
-        def parcours(noeud, noeuds_vus, compte):
-            noeuds_vus += [noeud]
-            for voisin in self.graph[noeud]:
-                if parcours(voisin, noeuds_vus, compte) < puissance:
+        #def parcours(noeud, noeuds_vus, compte):
+            #noeuds_vus += [noeud]
+            #for voisin in self.graph[noeud]:
+                #if parcours(voisin, noeuds_vus, compte) < puissance:
 
-                noeud_etudie = voisin[0]
-                if
+                #noeud_etudie = voisin[0]
+                #if
 
 # parcours renvoie le chemin et la puissance
 
-        parcours(src, [], 0)
+        #parcours(src, [], 0)
 
-        ----------------
+        #----------------
 
-        noeuds_vus = []
+        #noeuds_vus = []
 
-        start = noeud
-        end = end
-        fonction(start, end, composantespasaccessibles) renvoie le trajet de start à end et renvoie le cout associé
-        l = liste vide
-        pour chque voisin du noeud pas encore vu
-        si voisin = arrivée -> l.append(power_min du trajet noeud/arrivee , [arrivee])
-        sinon -> on ajoute noeud a la liste des noeuds vus puis on ajoute à l : (cout obtenu par la fonction appliquee avec voisin comme depart + power_min du trajet noeud/voisin , [trajet obtenu par la fonction jusqua larrivée])
-        on regarde où est minimisée l (concernant la premiere composante des couples)
+        #start = noeud
+        #end = end
+        #fonction(start, end, composantespasaccessibles) renvoie le trajet de start à end et renvoie le cout associé
+        #l = liste vide
+        #pour chque voisin du noeud pas encore vu
+        #si voisin = arrivée -> l.append(power_min du trajet noeud/arrivee , [arrivee])
+        #sinon -> on ajoute noeud a la liste des noeuds vus puis on ajoute à l : (cout obtenu par la fonction appliquee avec voisin comme depart + power_min du trajet noeud/voisin , [trajet obtenu par la fonction jusqua larrivée])
+        #on regarde où est minimisée l (concernant la premiere composante des couples)
         
+        #---------
+
+        def fonc(start, end, composantespasaccessibles):
+            l = []
+            composantesnonaccessibles = [start]
+            for voisin in self.graph[noeud]:
+                if voisin[0] not in composantesnonaccessibles:
+                    composantesnonaccessibles.append(voisin[0])
+                    if voisin[0] == end:
+                        l.append(voisin[1], [voisin[0]])
+                    else:
+                        longueur = len(fonction(voisin[0], end, composantespasaccessibles)[1])
+                        m = [voisin[0]]*(longueur+1)
+                        for i in range(longueur):
+                            m[i+1] = fonction(voisin[0], end, composantespasaccessibles)[1][i]
+                        l.append(voisin[1] + fonction(voisin[0], end, composantespasaccessibles)[0], m)
+            n = len(l)
+            puissancemin = l[0][0]
+            noeudmin = 0
+            for i in range(n):
+                if l[i][0] < puissancemin:
+                    puissancemin = l[i][0]
+                    noeudmin = i
+            return(puissancemin, l[i][1])
+
+        
+            
+
+
+
         
         
 
