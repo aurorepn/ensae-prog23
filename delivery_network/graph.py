@@ -39,8 +39,6 @@ class Graph:
             for source, destination in self.graph.items():
                 output += f"{source}-->{destination}\n"
         return output
-    
-#Ceci est un test
 
     def add_edge(self, node1, node2, power_min, dist=1):
         """
@@ -62,9 +60,10 @@ class Graph:
         self.graph[node2].append((node1, power_min, dist))
     
 
+
     def get_path_with_power(self, src, dest, power):
         
-        licomponents = connected_components(self)
+        licomponents = self.connected_components()
         for component in licomponents:
             if src in component:
                 if not dest in component:
@@ -103,40 +102,45 @@ class Graph:
         
         #---------
 
-        def fonc(start, end, composantespasaccessibles):
+        def fonc(start, composantespasaccessibles):
             l = []
-            composantesnonaccessibles = [start]
-            for voisin in self.graph[noeud]:
+            composantesnonaccessibles = composantespasaccessibles
+            composantesnonaccessibles.append(start)
+            for voisin in self.graph[start]:
                 if voisin[0] not in composantesnonaccessibles:
                     composantesnonaccessibles.append(voisin[0])
-                    if voisin[0] == end:
-                        l.append(voisin[1], [voisin[0]])
+                    if voisin[0] == dest:
+                        l.append((voisin[1], [voisin[0]]))
                     else:
-                        longueur = len(fonction(voisin[0], end, composantespasaccessibles)[1])
-                        m = [voisin[0]]*(longueur+1)
-                        for i in range(longueur):
-                            m[i+1] = fonction(voisin[0], end, composantespasaccessibles)[1][i]
-                        l.append(voisin[1] + fonction(voisin[0], end, composantespasaccessibles)[0], m)
+                        longueur = len(fonc(voisin[0], composantesnonaccessibles)[1])
+                        #m = [voisin[0]]*(longueur+1)
+                        #if longueur > 0:
+                            #for i in range(longueur):
+                                #m[i+1] = fonc(voisin[0], composantesnonaccessibles)[1][i]
+                        l.append((voisin[1] + fonc(voisin[0], composantesnonaccessibles)[0], [voisin[0]]+fonc(voisin[0], composantesnonaccessibles)[1]))
             n = len(l)
-            puissancemin = l[0][0]
-            noeudmin = 0
-            for i in range(n):
-                if l[i][0] < puissancemin:
-                    puissancemin = l[i][0]
-                    noeudmin = i
-            return(puissancemin, l[i][1])
+            if n > 0:
+                puissancemin = l[0][0]
+                noeudmin = 0
+                for i in range(n):
+                    if l[i][0] < puissancemin:
+                        puissancemin = l[i][0]
+                        noeudmin = i
+                return (puissancemin, l[noeudmin][1])
+            else :
+                return(float("inf"), [])
 
-        
-            
+        res = fonc(src, [])
+
+        puissmin = res[0]
+        chemin = res[1]
+
+        if puissmin > power:
+            return None
+        else :
+            return chemin
 
 
-
-        
-        
-
-
-        raise NotImplementedError
-    
 
     def connected_components(self):
         licomponents = []
@@ -161,11 +165,13 @@ class Graph:
 #pour n sommets et m arêtes
 
 
+
     def connected_components_set(self):
         """
         The result should be a set of frozensets (one per component), 
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
         """
+        
         return set(map(frozenset, self.connected_components()))
     
     def min_power(self, src, dest):
@@ -213,3 +219,4 @@ def graph_from_file(filename):
                 graphe.add_edge(noeud1, noeud2, power_min)
 
     return graphe
+
