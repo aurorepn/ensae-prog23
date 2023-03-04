@@ -7,8 +7,11 @@ from graph import Graph, graph_from_file
 #g = graph_from_file(data_path + file_name)
 #print(g)
 
-gr = Graph([1])
+#gr = Graph([1])
 
-print(gr)
+#print(gr)
 
-gr.add_edge(2, 1, 18)
+#gr.add_edge(2, 1, 18)
+
+g = graph_from_file("input/network.04.in")
+print(g.min_power(1,3))

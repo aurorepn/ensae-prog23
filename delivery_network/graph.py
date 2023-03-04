@@ -70,8 +70,6 @@ class Graph:
                     #return None
                 #else:
                     #noeuds_atteignables = component
-
-
         
 
         def fonc(start, pasacces):
@@ -139,11 +137,48 @@ class Graph:
         
         return set(map(frozenset, self.connected_components()))
     
+
+
     def min_power(self, src, dest):
         """
         Should return path, min_power. 
         """
-        raise NotImplementedError
+
+        licomponents = self.connected_components()
+        for component in licomponents:
+            if src in component:
+                if dest not in component:
+                    return ([], float("inf"))
+                #else:
+                    #noeuds_atteignables = component
+
+        def fonc(start, pasacces):
+            l = []
+            pasacces.append(start)
+            for voisin in self.graph[start]:
+                if voisin[0] not in pasacces:
+                    if voisin[0] == dest:
+                        l.append((voisin[1], [voisin[0]]))
+                    else:
+                        l.append((max(voisin[1], fonc(voisin[0], pasacces + [voisin[0]])[0]), fonc(voisin[0], pasacces + [voisin[0]])[1]))
+            n = len(l)
+            if n > 0:
+                puissancemin = l[0][0]
+                noeudmin = 0
+                for i in range(n):
+                    if l[i][0] < puissancemin:
+                        puissancemin = l[i][0]
+                        noeudmin = i
+                return (puissancemin, [start] + l[noeudmin][1])
+            else:
+                return (float("inf"), [])
+
+        res = fonc(src, [])
+
+        puissmin = res[0]
+        chemin = res[1]
+
+        return (chemin, puissmin)
 
 
 def graph_from_file(filename):
