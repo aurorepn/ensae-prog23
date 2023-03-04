@@ -63,61 +63,26 @@ class Graph:
 
     def get_path_with_power(self, src, dest, power):
         
-        licomponents = self.connected_components()
-        for component in licomponents:
-            if src in component:
-                if not dest in component:
-                    return None
-                else:
-                    noeuds_atteignables = component
+        #licomponents = self.connected_components()
+        #for component in licomponents:
+            #if src in component:
+                #if dest not in component:
+                    #return None
+                #else:
+                    #noeuds_atteignables = component
 
 
-        #puissance = float("inf")
-
-
-        #def parcours(noeud, noeuds_vus, compte):
-            #noeuds_vus += [noeud]
-            #for voisin in self.graph[noeud]:
-                #if parcours(voisin, noeuds_vus, compte) < puissance:
-
-                #noeud_etudie = voisin[0]
-                #if
-
-# parcours renvoie le chemin et la puissance
-
-        #parcours(src, [], 0)
-
-        #----------------
-
-        #noeuds_vus = []
-
-        #start = noeud
-        #end = end
-        #fonction(start, end, composantespasaccessibles) renvoie le trajet de start à end et renvoie le cout associé
-        #l = liste vide
-        #pour chque voisin du noeud pas encore vu
-        #si voisin = arrivée -> l.append(power_min du trajet noeud/arrivee , [arrivee])
-        #sinon -> on ajoute noeud a la liste des noeuds vus puis on ajoute à l : (cout obtenu par la fonction appliquee avec voisin comme depart + power_min du trajet noeud/voisin , [trajet obtenu par la fonction jusqua larrivée])
-        #on regarde où est minimisée l (concernant la premiere composante des couples)
         
-        #---------
 
-        def fonc(start, composantespasaccessibles):
+        def fonc(start, pasacces):
             l = []
-            composantesnonaccessibles = composantespasaccessibles
-            composantesnonaccessibles.append(start)
+            pasacces.append(start)
             for voisin in self.graph[start]:
-                if voisin[0] not in composantesnonaccessibles:
-                    composantesnonaccessibles.append(voisin[0])
+                if voisin[0] not in pasacces:
                     if voisin[0] == dest:
                         l.append((voisin[1], [voisin[0]]))
                     else:
-                        longueur = len(fonc(voisin[0], composantesnonaccessibles)[1])
-                        #m = [voisin[0]]*(longueur+1)
-                        #if longueur > 0:
-                            #for i in range(longueur):
-                                #m[i+1] = fonc(voisin[0], composantesnonaccessibles)[1][i]
-                        l.append((voisin[1] + fonc(voisin[0], composantesnonaccessibles)[0], [voisin[0]]+fonc(voisin[0], composantesnonaccessibles)[1]))
+                        l.append((max(voisin[1], fonc(voisin[0], pasacces + [voisin[0]])[0]), fonc(voisin[0], pasacces + [voisin[0]])[1]))
             n = len(l)
             if n > 0:
                 puissancemin = l[0][0]
@@ -126,9 +91,9 @@ class Graph:
                     if l[i][0] < puissancemin:
                         puissancemin = l[i][0]
                         noeudmin = i
-                return (puissancemin, l[noeudmin][1])
-            else :
-                return(float("inf"), [])
+                return (puissancemin, [start] + l[noeudmin][1])
+            else:
+                return (float("inf"), [])
 
         res = fonc(src, [])
 
@@ -137,7 +102,7 @@ class Graph:
 
         if puissmin > power:
             return None
-        else :
+        else:
             return chemin
 
 
@@ -220,3 +185,85 @@ def graph_from_file(filename):
 
     return graphe
 
+
+
+"""
+def get_path_with_power(self, src, dest, power):
+        
+        #licomponents = self.connected_components()
+        #for component in licomponents:
+            #if src in component:
+                #if dest not in component:
+                    #return None
+                #else:
+                    #noeuds_atteignables = component
+
+
+        #puissance = float("inf")
+
+
+        #def parcours(noeud, noeuds_vus, compte):
+            #noeuds_vus += [noeud]
+            #for voisin in self.graph[noeud]:
+                #if parcours(voisin, noeuds_vus, compte) < puissance:
+
+                #noeud_etudie = voisin[0]
+                #if
+
+# parcours renvoie le chemin et la puissance
+
+        #parcours(src, [], 0)
+
+        #----------------
+
+        #noeuds_vus = []
+
+        #start = noeud
+        #end = end
+        #fonction(start, end, composantespasaccessibles) renvoie le trajet de start à end et renvoie le cout associé
+        #l = liste vide
+        #pour chque voisin du noeud pas encore vu
+        #si voisin = arrivée -> l.append(power_min du trajet noeud/arrivee , [arrivee])
+        #sinon -> on ajoute noeud a la liste des noeuds vus puis on ajoute à l : (cout obtenu par la fonction appliquee avec voisin comme depart + power_min du trajet noeud/voisin , [trajet obtenu par la fonction jusqua larrivée])
+        #on regarde où est minimisée l (concernant la premiere composante des couples)
+        
+        #---------
+
+        def fonc(start, pasacces):
+            l = []
+            #composantesnonaccessibles = composantespasaccessibles
+            pasacces.append(start)
+            for voisin in self.graph[start]:
+                if voisin[0] not in pasacces:
+                    #composantesnonaccessibles.append(voisin[0])
+                    if voisin[0] == dest:
+                        l.append((voisin[1], [voisin[0]]))
+                    else:
+                        #longueur = len(fonc(voisin[0], composantesnonaccessibles+[voisin[0]])[1])
+                        #m = [voisin[0]]*(longueur+1)
+                        #if longueur > 0:
+                            #for i in range(longueur):
+                                #m[i+1] = fonc(voisin[0], composantesnonaccessibles)[1][i]
+                        l.append((voisin[1] + fonc(voisin[0], pasacces + [voisin[0]])[0], fonc(voisin[0], pasacces + [voisin[0]])[1]))
+            n = len(l)
+            if n > 0:
+                puissancemin = l[0][0]
+                noeudmin = 0
+                for i in range(n):
+                    if l[i][0] < puissancemin:
+                        puissancemin = l[i][0]
+                        noeudmin = i
+                return (puissancemin, [start] + l[noeudmin][1])
+            else:
+                return (float("inf"), [])
+
+        res = fonc(src, [])
+
+        puissmin = res[0]
+        chemin = res[1]
+
+        if puissmin > power:
+            return None
+        else:
+            return chemin
+"""
