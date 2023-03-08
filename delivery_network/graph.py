@@ -234,7 +234,7 @@ def graph_from_file(filename):
 
 
 """
-Question 11 :
+Question 10 :
 """
 import random
 import time
