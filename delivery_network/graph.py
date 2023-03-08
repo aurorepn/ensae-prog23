@@ -56,6 +56,17 @@ class Graph:
             Distance between node1 and node2 on the edge. Default is 1.
         """
         self.nb_edges += 1
+
+        if node1 not in self.graph:
+            self.graph[node1] = []
+            self.nb_nodes += 1
+            self.nodes.append(node1)
+        
+        if node2 not in self.graph:
+            self.graph[node2] = []
+            self.nb_nodes += 1
+            self.nodes.append(node2)
+
         self.graph[node1].append((node2, power_min, dist))
         self.graph[node2].append((node1, power_min, dist))
     
@@ -219,6 +230,27 @@ def graph_from_file(filename):
                 graphe.add_edge(noeud1, noeud2, power_min)
 
     return graphe
+
+
+
+"""
+Question 11 :
+"""
+import random
+import time
+import math
+
+def estimation_duree(file):
+    g = graph_from_file(file)
+    somme = 0
+    for i in range(20):
+        n1 = random.choice(g.nodes)
+        n2 = random.choice(g.nodes)
+        t0 = time.perf_counter()
+        res = g.min_power(n1, n2)
+        t1 = time.perf_counter()
+        somme = somme + t1 - t0
+    return (math.comb(g.nb_nodes, 2) * somme/20)
 
 
 

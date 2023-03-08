@@ -1,4 +1,4 @@
-from graph import Graph, graph_from_file
+from graph import Graph, graph_from_file, estimation_duree
 
 
 #data_path = "input/"
@@ -13,5 +13,7 @@ from graph import Graph, graph_from_file
 
 #gr.add_edge(2, 1, 18)
 
-g = graph_from_file("input/network.04.in")
-print(g.min_power(1,3))
+#g = graph_from_file("input/network.04.in")
+#print(g.min_power(1,3))
+
+print(estimation_duree("input/network.01.in"))
