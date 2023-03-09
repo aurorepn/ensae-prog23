@@ -254,6 +254,27 @@ def estimation_duree(file):
 
 
 
+def kruskal(g):
+
+    g_res = Graph([])
+
+    li = []
+    for i in range(1, g.nb_nodes+1):
+        if len(g.graph[i]) > 0:
+            for voisin in g.graph[i]:
+                if voisin[0] < i:
+                    li.append((voisin[1], i, voisin[0]))
+    li.sort()
+
+    for arete in li:
+        if arete[1] not in g_res.nodes or arete[2] not in g_res.nodes or len(g_res.min_power(arete[1], arete[2])[0]) == 0:
+            g_res.add_edge(arete[1], arete[2], arete[0])
+
+    return g_res
+
+
+
+
 """
 def get_path_with_power(self, src, dest, power):
         

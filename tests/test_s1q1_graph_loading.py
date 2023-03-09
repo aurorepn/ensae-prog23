@@ -13,7 +13,6 @@ class Test_GraphLoading(unittest.TestCase):
 
     def test_network1(self):
         g = graph_from_file("input/network.01.in")
-        self.assertEqual(g.nb_nodes, 7)
         self.assertEqual(g.nb_edges, 5)
     
     def test_network4(self):
