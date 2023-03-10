@@ -3,7 +3,7 @@ sys.path.append("delivery_network")
 import unittest 
 from graph import Graph, graph_from_file, kruskal
 
-class Test_GraphLoading(unittest.TestCase):
+class Test_Kruskal(unittest.TestCase):
     def test_network0(self):
         g = graph_from_file("input/network.00.in")
         self.assertEqual(kruskal(g).nb_edges, 9)

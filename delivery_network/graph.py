@@ -91,7 +91,8 @@ class Graph:
                     if voisin[0] == dest:
                         l.append((voisin[1], [voisin[0]]))
                     else:
-                        l.append((max(voisin[1], fonc(voisin[0], pasacces + [voisin[0]])[0]), fonc(voisin[0], pasacces + [voisin[0]])[1]))
+                        x, y = fonc(voisin[0], pasacces + [voisin[0]])
+                        l.append((max(voisin[1], x), y))
             n = len(l)
             if n > 0:
                 puissancemin = l[0][0]
@@ -171,7 +172,8 @@ class Graph:
                     if voisin[0] == dest:
                         l.append((voisin[1], [voisin[0]]))
                     else:
-                        l.append((max(voisin[1], fonc(voisin[0], pasacces + [voisin[0]])[0]), fonc(voisin[0], pasacces + [voisin[0]])[1]))
+                        x, y = fonc(voisin[0], pasacces + [voisin[0]])
+                        l.append((max(voisin[1], x), y))
             n = len(l)
             if n > 0:
                 puissancemin = l[0][0]
@@ -291,3 +293,37 @@ def kruskal(g):
 
     return g_res
 
+
+
+def power_min_arbre_couvrant(arbre, n1, n2):
+
+    if not est_relie(arbre, n1, n2):
+        return ([], float("inf"))
+    
+    def f_rec(start, noeuds_vus):
+        noeuds_vus.append(start)
+        for voisin in arbre.graph[start]:
+            if voisin[0] not in noeuds_vus:
+                noeuds_vus.append(voisin[0])
+                if voisin[0] == n2:
+                    return ([voisin[0]], voisin[1])
+                else:
+                    x, y = f_rec(voisin[0], noeuds_vus)
+                    return (x, max(voisin[1], y))
+        return f_rec(noeuds_vus[len(noeuds_vus)-2], noeuds_vus)
+
+    res1, res2 = f_rec(n1, [])
+
+    return ([n1]+res1, res2)
+
+"""
+    pour chaque voisin de start:
+    si voisin[0] nest pas deja vu :
+        noeuds_vus.append(voisin[0])
+        on regarde si voisin[0] == arrivee
+            si oui : on renvoie ([voisin[0]], voisin[1])
+            si non :
+                si f(voisin[0], noeuds_vus) == ([], 0) : on renvoie f(start, noeuds_vus)
+    (si à ce moment là f ne renvoie rien, cest que start na pas de voisin pas encore vu. Alors :)
+    renvoyer f()
+"""
