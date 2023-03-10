@@ -236,21 +236,40 @@ def graph_from_file(filename):
 """
 Question 10 :
 """
-import random
 import time
-import math
 
-def estimation_duree(file):
-    g = graph_from_file(file)
-    somme = 0
-    for i in range(20):
-        n1 = random.choice(g.nodes)
-        n2 = random.choice(g.nodes)
-        t0 = time.perf_counter()
-        res = g.min_power(n1, n2)
-        t1 = time.perf_counter()
-        somme = somme + t1 - t0
-    return (math.comb(g.nb_nodes, 2) * somme/20)
+g_net1 = graph_from_file("input/network.1.in")
+
+def estimation_duree(file_routes):
+    with open(file_routes) as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        somme = 0
+        for i in range(5):
+            ligne = file.readline().split()
+            n1 = int(ligne[0])
+            n2 = int(ligne[1])
+            t0 = time.perf_counter()
+            res = g_net1.min_power(n1, n2)
+            t1 = time.perf_counter()
+            somme = somme + t1 - t0
+    return (n * somme/5)
+
+
+def est_relie(g, n1, n2):
+    licomponents = g.connected_components()
+    for component in licomponents:
+        if n1 in component:
+            if n2 in component:
+                return True
+            else:
+                return False
+        elif n2 in component:
+            if n1 in component:
+                return True
+            else:
+                return False
+
 
 
 
@@ -267,91 +286,8 @@ def kruskal(g):
     li.sort()
 
     for arete in li:
-        if arete[1] not in g_res.nodes or arete[2] not in g_res.nodes or len(g_res.min_power(arete[1], arete[2])[0]) == 0:
+        if arete[1] not in g_res.nodes or arete[2] not in g_res.nodes or not est_relie(g_res, arete[1], arete[2]):
             g_res.add_edge(arete[1], arete[2], arete[0])
 
     return g_res
 
-
-
-
-"""
-def get_path_with_power(self, src, dest, power):
-        
-        #licomponents = self.connected_components()
-        #for component in licomponents:
-            #if src in component:
-                #if dest not in component:
-                    #return None
-                #else:
-                    #noeuds_atteignables = component
-
-
-        #puissance = float("inf")
-
-
-        #def parcours(noeud, noeuds_vus, compte):
-            #noeuds_vus += [noeud]
-            #for voisin in self.graph[noeud]:
-                #if parcours(voisin, noeuds_vus, compte) < puissance:
-
-                #noeud_etudie = voisin[0]
-                #if
-
-# parcours renvoie le chemin et la puissance
-
-        #parcours(src, [], 0)
-
-        #----------------
-
-        #noeuds_vus = []
-
-        #start = noeud
-        #end = end
-        #fonction(start, end, composantespasaccessibles) renvoie le trajet de start à end et renvoie le cout associé
-        #l = liste vide
-        #pour chque voisin du noeud pas encore vu
-        #si voisin = arrivée -> l.append(power_min du trajet noeud/arrivee , [arrivee])
-        #sinon -> on ajoute noeud a la liste des noeuds vus puis on ajoute à l : (cout obtenu par la fonction appliquee avec voisin comme depart + power_min du trajet noeud/voisin , [trajet obtenu par la fonction jusqua larrivée])
-        #on regarde où est minimisée l (concernant la premiere composante des couples)
-        
-        #---------
-
-        def fonc(start, pasacces):
-            l = []
-            #composantesnonaccessibles = composantespasaccessibles
-            pasacces.append(start)
-            for voisin in self.graph[start]:
-                if voisin[0] not in pasacces:
-                    #composantesnonaccessibles.append(voisin[0])
-                    if voisin[0] == dest:
-                        l.append((voisin[1], [voisin[0]]))
-                    else:
-                        #longueur = len(fonc(voisin[0], composantesnonaccessibles+[voisin[0]])[1])
-                        #m = [voisin[0]]*(longueur+1)
-                        #if longueur > 0:
-                            #for i in range(longueur):
-                                #m[i+1] = fonc(voisin[0], composantesnonaccessibles)[1][i]
-                        l.append((voisin[1] + fonc(voisin[0], pasacces + [voisin[0]])[0], fonc(voisin[0], pasacces + [voisin[0]])[1]))
-            n = len(l)
-            if n > 0:
-                puissancemin = l[0][0]
-                noeudmin = 0
-                for i in range(n):
-                    if l[i][0] < puissancemin:
-                        puissancemin = l[i][0]
-                        noeudmin = i
-                return (puissancemin, [start] + l[noeudmin][1])
-            else:
-                return (float("inf"), [])
-
-        res = fonc(src, [])
-
-        puissmin = res[0]
-        chemin = res[1]
-
-        if puissmin > power:
-            return None
-        else:
-            return chemin
-"""
