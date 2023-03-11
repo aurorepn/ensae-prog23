@@ -26,3 +26,7 @@ from graph import Graph, graph_from_file, estimation_duree, kruskal, power_min_a
 g = graph_from_file("input/network.04.in")
 arbre = kruskal(g)
 print(power_min_arbre_couvrant(arbre, 1, 2))
+
+g0 = graph_from_file("input/network.00.in")
+arbre0 = kruskal(g0)
+print(power_min_arbre_couvrant(arbre0, 1, 4))

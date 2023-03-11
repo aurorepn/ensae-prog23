@@ -74,15 +74,8 @@ class Graph:
 
     def get_path_with_power(self, src, dest, power):
         
-        #licomponents = self.connected_components()
-        #for component in licomponents:
-            #if src in component:
-                #if dest not in component:
-                    #return None
-                #else:
-                    #noeuds_atteignables = component
-        
-
+        #On définit la fonction fonc qui prend en entrée un noeud (start) et une liste de noeuds (pasacces)
+        #Cette fonction renvoie le meilleur itinéaire du trajet de start à dest, sans passer par les noeuds de la liste pascces
         def fonc(start, pasacces):
             l = []
             pasacces.append(start)
@@ -105,11 +98,12 @@ class Graph:
             else:
                 return (float("inf"), [])
 
+        #On applique cette fonction fonc à (src, []) car au début, tous les noeuds sont atteignables
         res = fonc(src, [])
-
         puissmin = res[0]
         chemin = res[1]
 
+        #On compare la puissance minimale pour ce trajet avec power et on renvoie le résultat associé :
         if puissmin > power:
             return None
         else:
@@ -156,14 +150,16 @@ class Graph:
         Should return path, min_power. 
         """
 
+        #On commence par tester si self et src sont bien dans une même composante connexe
+        #Sinon, on décide arbitrairement de renvoyer ([], infini)
         licomponents = self.connected_components()
         for component in licomponents:
             if src in component:
                 if dest not in component:
                     return ([], float("inf"))
-                #else:
-                    #noeuds_atteignables = component
 
+        #On définit la fonction fonc qui prend en entrée un noeud (start) et une liste de noeuds (pasacces)
+        #Cette fonction renvoie le meilleur itinéaire du trajet de start à dest, sans passer par les noeuds de la liste pascces
         def fonc(start, pasacces):
             l = []
             pasacces.append(start)
@@ -186,8 +182,8 @@ class Graph:
             else:
                 return (float("inf"), [])
 
+        #On applique cette fonction fonc à (src, []) car au début, tous les noeuds sont atteignables
         res = fonc(src, [])
-
         puissmin = res[0]
         chemin = res[1]
 
@@ -242,6 +238,8 @@ import time
 
 g_net1 = graph_from_file("input/network.1.in")
 
+#La fonction estimation_duree prend en argument un fichier contenant des routes
+#Elle estime le temps mis par la fonction min_power appliquée à l'ensemble de ces routes à partir des 5 premières
 def estimation_duree(file_routes):
     with open(file_routes) as file:
         ligne1 = file.readline().split()
@@ -258,6 +256,8 @@ def estimation_duree(file_routes):
     return (n * somme/5)
 
 
+#La fonction est_relie prend en argument un graphe g et deux noeuds n1 et n2 
+#Elle renvoie le booléen correpondant à si ces deux noeuds sont reliés dans le graphe g
 def est_relie(g, n1, n2):
     licomponents = g.connected_components()
     for component in licomponents:
@@ -274,27 +274,29 @@ def est_relie(g, n1, n2):
 
 
 
+#La fonction kruskal prend en argument un graphe g et renvoie l'arbre couvrant de poids minimal de g
 
 def kruskal(g):
 
     g_res = Graph([])
-
+    #On crée tout d'abord la liste des arêtes de g, contenant les arêtes sous la forme (puissance, noeud1, noeud2):
     li = []
     for i in range(1, g.nb_nodes+1):
         if len(g.graph[i]) > 0:
             for voisin in g.graph[i]:
                 if voisin[0] < i:
                     li.append((voisin[1], i, voisin[0]))
-    li.sort()
+    li.sort() #En triant la liste, les arêtes sont classées par puissance croissante
 
     for arete in li:
+        #Pour chaque arête de g, si les noeuds ne sont pas déjà reliés, on ajoute l'arête à g_res :
         if arete[1] not in g_res.nodes or arete[2] not in g_res.nodes or not est_relie(g_res, arete[1], arete[2]):
             g_res.add_edge(arete[1], arete[2], arete[0])
 
     return g_res
 
 
-
+"""
 def power_min_arbre_couvrant(arbre, n1, n2):
 
     if not est_relie(arbre, n1, n2):
@@ -316,7 +318,7 @@ def power_min_arbre_couvrant(arbre, n1, n2):
 
     return ([n1]+res1, res2)
 
-"""
+
     pour chaque voisin de start:
     si voisin[0] nest pas deja vu :
         noeuds_vus.append(voisin[0])
@@ -327,3 +329,4 @@ def power_min_arbre_couvrant(arbre, n1, n2):
     (si à ce moment là f ne renvoie rien, cest que start na pas de voisin pas encore vu. Alors :)
     renvoyer f()
 """
+

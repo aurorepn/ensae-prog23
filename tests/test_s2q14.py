@@ -1,3 +1,5 @@
+#On réalise les mêmes tests que pour la fonction min_power, mais appliqués aux arbres couvrants associés
+
 import sys 
 sys.path.append("delivery_network")
 
