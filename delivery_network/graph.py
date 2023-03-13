@@ -329,4 +329,31 @@ def power_min_arbre_couvrant(arbre, n1, n2):
     (si à ce moment là f ne renvoie rien, cest que start na pas de voisin pas encore vu. Alors :)
     renvoyer f()
 """
+#La fonction power_min_arbre_couvrant prend en argument un arbre couvrant et deux noeuds n1 et n2 de cet arbre
+#Elle renvoie le chemin de n1 à n2 ainsi que la puissance associée à ce chemin
+#(Cette puissance est forcément minimale car l'arbre n'est pas cyclique)
+def power_min_arbre_couvrant(arbre, n1, n2):
+
+    #On commence par tester si arbre est bien un arbre ie que arbre est connexe (sinon on renvoie une puissance infinie)
+    if not est_relie(arbre, n1, n2):
+        return ([], float("inf"))
+    
+    #La fonction f_rec prend en argument un noeud start et une liste de noeuds noeuds_vus
+    #Elle renvoie la liste correspondant au chemin de start à n2 sans passer par les noeuds de noeuds_vus si chemin existe
+    #Si ce chemin n'existe pas, elle ne renvoie rien
+    def f_rec(start, noeuds_vus):
+        noeuds_vus.append(start)
+        for voisin in arbre.graph[start]:
+            if voisin[0] not in noeuds_vus:
+                if voisin[0] == n2:
+                    return ([voisin[0]], voisin[1])
+                else:
+                    res = f_rec(voisin[0], noeuds_vus)
+                    if res != None :
+                        return (res[0], max(voisin[1], res[1]))
+        
+    #On applique cette fonction à (n1, []) car au début tous les noeuds sont accessibles
+    res1, res2 = f_rec(n1, [])
+
+    return ([n1]+res1, res2)
 
