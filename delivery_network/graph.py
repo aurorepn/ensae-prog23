@@ -236,7 +236,6 @@ Question 10 :
 """
 import time
 
-g_net1 = graph_from_file("input/network.1.in")
 
 #La fonction estimation_duree prend en argument un fichier contenant des routes
 #Elle estime le temps mis par la fonction min_power appliquée à l'ensemble de ces routes à partir des 5 premières
@@ -255,23 +254,9 @@ def estimation_duree(file_routes):
             somme = somme + t1 - t0
     return (n * somme/5)
 
-"""
-#La fonction est_relie prend en argument un graphe g et deux noeuds n1 et n2 
-#Elle renvoie le booléen correpondant à si ces deux noeuds sont reliés dans le graphe g
-def est_relie(g, n1, n2):
-    licomponents = g.connected_components()
-    for component in licomponents:
-        if n1 in component:
-            if n2 in component:
-                return True
-            else:
-                return False
-        elif n2 in component:
-            if n1 in component:
-                return True
-            else:
-                return False
-"""
+#Nootre fonction min_power n'est pas assez optimisée, on ne peut donc pas calculer sa durée d'exécution
+
+
 
 #La fonction sont_relies prend en argument un graphe g et deux noeuds n1 et n2 
 #Elle renvoie le booléen correpondant à si ces deux noeuds sont reliés dans le graphe g
@@ -279,6 +264,8 @@ def sont_relies(g, n1, n2):
 
     noeuds_vus = {noeud:False for noeud in g.nodes}
 
+#La fonction parcours prend en argument un noeud appelé noeud
+#Elle parcours le graphe g et renvoie True si noeud et n2 sont reliés dans le graphe g et False sinon
     def parcours(noeud):
         for voisin in g.graph[noeud]:
             if voisin[0] == n2:
@@ -289,15 +276,12 @@ def sont_relies(g, n1, n2):
                     return True
         return False
 
+#On évalue cette fonction en n1
     return (parcours(n1))
 
 
 
-
-
-
 #La fonction kruskal prend en argument un graphe g et renvoie l'arbre couvrant de poids minimal de g
-
 def kruskal(g):
 
     g_res = Graph([])
@@ -309,33 +293,18 @@ def kruskal(g):
                 if voisin[0] < i:
                     li.append((voisin[1], i, voisin[0]))
     li.sort() #En triant la liste, les arêtes sont classées par puissance croissante
-
-    for arete in li:
-        #Pour chaque arête de g, si les noeuds ne sont pas déjà reliés, on ajoute l'arête à g_res :
-        if arete[1] not in g_res.nodes or arete[2] not in g_res.nodes or not est_relie(g_res, arete[1], arete[2]):
-            g_res.add_edge(arete[1], arete[2], arete[0])
-
-    return g_res
-
-#La fonction kruskal prend en argument un graphe g et renvoie l'arbre couvrant de poids minimal de g
-def kruskalbis(g):
-
-    g_res = Graph([])
-    #On crée tout d'abord la liste des arêtes de g, contenant les arêtes sous la forme (puissance, noeud1, noeud2):
-    li = []
-    for i in range(1, g.nb_nodes+1):
-        if len(g.graph[i]) > 0:
-            for voisin in g.graph[i]:
-                if voisin[0] < i:
-                    li.append((voisin[1], i, voisin[0]))
-    li.sort() #En triant la liste, les arêtes sont classées par puissance croissante
+    
+    #Cette première partie de la fonction kruskal est en O(n^2) où n est le nombre de noeuds.
 
     for arete in li:
         #Pour chaque arête de g, si les noeuds ne sont pas déjà reliés, on ajoute l'arête à g_res :
         if arete[1] not in g_res.nodes or arete[2] not in g_res.nodes or not sont_relies(g_res, arete[1], arete[2]):
             g_res.add_edge(arete[1], arete[2], arete[0])
+    #Cette deuxième partie de la fonction est en O(m^2) où m est le nombre d'arêtes du graphe
 
     return g_res
+
+    #La complexité de la fonction kruskal est donc en O(n^2 + m^2)
 
 
 
@@ -344,39 +313,44 @@ def kruskalbis(g):
 #(Cette puissance est forcément minimale car l'arbre n'est pas cyclique)
 def power_min_arbre_couvrant(arbre, n1, n2):
 
+    #Avant tout on traite le cas particulier où le noeud de départ est le noeud d'arrivée
     if n1 == n2:
         return ([n1], 0)
 
     #On commence par tester si arbre est bien un arbre ie que arbre est connexe (sinon on renvoie une puissance infinie)
-    if not est_relie(arbre, n1, n2):
+    if not sont_relies(arbre, n1, n2):
         return ([], float("inf"))
     #La fonction f_rec prend en argument un noeud start et une liste de noeuds noeuds_vus
     #Elle renvoie la liste correspondant au chemin de start à n2 sans passer par les noeuds de noeuds_vus si chemin existe
     #Si ce chemin n'existe pas, elle ne renvoie rien
-    def f_rec(start, noeuds_vus):
-        noeuds_vus.append(start)
+    noeuds_vus = {noeud:False for noeud in arbre.nodes}
+    def f_rec(start):
+        noeuds_vus[start] = True
         for voisin in arbre.graph[start]:
-            if voisin[0] not in noeuds_vus:
+            if not  noeuds_vus[voisin[0]]:
                 if voisin[0] == n2:
                     return ([voisin[0]], voisin[1])
                 else:
-                    res = f_rec(voisin[0], noeuds_vus)
+                    res = f_rec(voisin[0])
                     if len(res[0]) > 0 :
                         return ([voisin[0]] + res[0], max(voisin[1], res[1]))
         return ([], float("inf"))
         
-    #On applique cette fonction à (n1, []) car au début tous les noeuds sont accessibles
-    res1, res2 = f_rec(n1, [])
+    #On applique cette fonction à n1
+    res1, res2 = f_rec(n1)
 
     return ([n1]+res1, res2)
 
+#La fonction power_min_arbre_couvrant est en O(m) où m est le nombre d'arêtes de l'arbre considéré
 
 
 
-arbre_net1 = kruskal(g_net1)
-
-def duree_routes(routes):
-    with open(routes) as file:
+#La fonction duree_routes prend en argument un entier x entre 1 et 10
+#Elle renvoie la succession des puissances correspondant aux routes du fichier routes.x.in ainsi que la durée d'exécution du code
+def duree_routes(x):
+    g_net = graph_from_file("input/network." + str(x) + ".in")
+    arbre_net = kruskal(g_net)
+    with open("input/routes." + str(x) + ".in") as file:    
         ligne1 = file.readline().split()
         n = int(ligne1[0])
         somme = 0
@@ -385,8 +359,10 @@ def duree_routes(routes):
             n1 = int(ligne[0])
             n2 = int(ligne[1])
             t0 = time.perf_counter()
-            res = power_min_arbre_couvrant(arbre_net1, n1, n2)
-            print(res)
+            res = power_min_arbre_couvrant(arbre_net, n1, n2)
+            print(res[1])
             t1 = time.perf_counter()
             somme = somme + t1 - t0
     return (somme)
+
+#On obtient alors pour x=1 une durée d'execution de 0.0026s
