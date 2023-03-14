@@ -255,7 +255,7 @@ def estimation_duree(file_routes):
             somme = somme + t1 - t0
     return (n * somme/5)
 
-
+"""
 #La fonction est_relie prend en argument un graphe g et deux noeuds n1 et n2 
 #Elle renvoie le booléen correpondant à si ces deux noeuds sont reliés dans le graphe g
 def est_relie(g, n1, n2):
@@ -271,6 +271,28 @@ def est_relie(g, n1, n2):
                 return True
             else:
                 return False
+"""
+
+#La fonction sont_relies prend en argument un graphe g et deux noeuds n1 et n2 
+#Elle renvoie le booléen correpondant à si ces deux noeuds sont reliés dans le graphe g
+def sont_relies(g, n1, n2):
+
+    noeuds_vus = {noeud:False for noeud in g.nodes}
+
+    def parcours(noeud):
+        for voisin in g.graph[noeud]:
+            if voisin[0] == n2:
+                return True
+            if not noeuds_vus[voisin[0]]:
+                noeuds_vus[voisin[0]] = True
+                if parcours(voisin[0]):
+                    return True
+        return False
+
+    return (parcours(n1))
+
+
+
 
 
 
@@ -295,49 +317,39 @@ def kruskal(g):
 
     return g_res
 
+#La fonction kruskal prend en argument un graphe g et renvoie l'arbre couvrant de poids minimal de g
+def kruskalbis(g):
 
-"""
-def power_min_arbre_couvrant(arbre, n1, n2):
+    g_res = Graph([])
+    #On crée tout d'abord la liste des arêtes de g, contenant les arêtes sous la forme (puissance, noeud1, noeud2):
+    li = []
+    for i in range(1, g.nb_nodes+1):
+        if len(g.graph[i]) > 0:
+            for voisin in g.graph[i]:
+                if voisin[0] < i:
+                    li.append((voisin[1], i, voisin[0]))
+    li.sort() #En triant la liste, les arêtes sont classées par puissance croissante
 
-    if not est_relie(arbre, n1, n2):
-        return ([], float("inf"))
-    
-    def f_rec(start, noeuds_vus):
-        noeuds_vus.append(start)
-        for voisin in arbre.graph[start]:
-            if voisin[0] not in noeuds_vus:
-                noeuds_vus.append(voisin[0])
-                if voisin[0] == n2:
-                    return ([voisin[0]], voisin[1])
-                else:
-                    x, y = f_rec(voisin[0], noeuds_vus)
-                    return (x, max(voisin[1], y))
-        return f_rec(noeuds_vus[len(noeuds_vus)-2], noeuds_vus)
+    for arete in li:
+        #Pour chaque arête de g, si les noeuds ne sont pas déjà reliés, on ajoute l'arête à g_res :
+        if arete[1] not in g_res.nodes or arete[2] not in g_res.nodes or not sont_relies(g_res, arete[1], arete[2]):
+            g_res.add_edge(arete[1], arete[2], arete[0])
 
-    res1, res2 = f_rec(n1, [])
-
-    return ([n1]+res1, res2)
+    return g_res
 
 
-    pour chaque voisin de start:
-    si voisin[0] nest pas deja vu :
-        noeuds_vus.append(voisin[0])
-        on regarde si voisin[0] == arrivee
-            si oui : on renvoie ([voisin[0]], voisin[1])
-            si non :
-                si f(voisin[0], noeuds_vus) == ([], 0) : on renvoie f(start, noeuds_vus)
-    (si à ce moment là f ne renvoie rien, cest que start na pas de voisin pas encore vu. Alors :)
-    renvoyer f()
-"""
+
 #La fonction power_min_arbre_couvrant prend en argument un arbre couvrant et deux noeuds n1 et n2 de cet arbre
 #Elle renvoie le chemin de n1 à n2 ainsi que la puissance associée à ce chemin
 #(Cette puissance est forcément minimale car l'arbre n'est pas cyclique)
 def power_min_arbre_couvrant(arbre, n1, n2):
 
+    if n1 == n2:
+        return ([n1], 0)
+
     #On commence par tester si arbre est bien un arbre ie que arbre est connexe (sinon on renvoie une puissance infinie)
     if not est_relie(arbre, n1, n2):
         return ([], float("inf"))
-    
     #La fonction f_rec prend en argument un noeud start et une liste de noeuds noeuds_vus
     #Elle renvoie la liste correspondant au chemin de start à n2 sans passer par les noeuds de noeuds_vus si chemin existe
     #Si ce chemin n'existe pas, elle ne renvoie rien
@@ -349,11 +361,32 @@ def power_min_arbre_couvrant(arbre, n1, n2):
                     return ([voisin[0]], voisin[1])
                 else:
                     res = f_rec(voisin[0], noeuds_vus)
-                    if res != None :
-                        return (res[0], max(voisin[1], res[1]))
+                    if len(res[0]) > 0 :
+                        return ([voisin[0]] + res[0], max(voisin[1], res[1]))
+        return ([], float("inf"))
         
     #On applique cette fonction à (n1, []) car au début tous les noeuds sont accessibles
     res1, res2 = f_rec(n1, [])
 
     return ([n1]+res1, res2)
 
+
+
+
+arbre_net1 = kruskal(g_net1)
+
+def duree_routes(routes):
+    with open(routes) as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        somme = 0
+        for i in range(n):
+            ligne = file.readline().split()
+            n1 = int(ligne[0])
+            n2 = int(ligne[1])
+            t0 = time.perf_counter()
+            res = power_min_arbre_couvrant(arbre_net1, n1, n2)
+            print(res)
+            t1 = time.perf_counter()
+            somme = somme + t1 - t0
+    return (somme)
