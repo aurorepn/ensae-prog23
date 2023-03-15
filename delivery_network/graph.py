@@ -232,11 +232,11 @@ def graph_from_file(filename):
 
 
 """
-Question 10 :
+SEANCE 2:
 """
 import time
 
-
+g_net1 = graph_from_file("input/network.1.in")
 #La fonction estimation_duree prend en argument un fichier contenant des routes
 #Elle estime le temps mis par la fonction min_power appliquée à l'ensemble de ces routes à partir des 5 premières
 def estimation_duree(file_routes):
