@@ -391,6 +391,28 @@ def camions_from_file(file_camion):
     return (res)
 
 
+#La fonction routes_et_power_from_file prend en argument un entier entre 1 et 10 et renvoie la liste des routes figurant sur le fichier routes.x.in sous la forme (départ, arrivée, puissance_min, utilité)
+def routes_et_power_from_file(x):
+    g_net = graph_from_file("input/network." + str(x) + ".in")
+    arbre_net = kruskal(g_net)
+    with open("input/routes." + str(x) + ".in") as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        res = [(0,0,0,0)]*n
+        for i in range(n):
+            ligne = file.readline().split()
+            n1 = int(ligne[0])
+            n2 = int(ligne[1])
+            power = power_min_arbre_couvrant(arbre_net, n1, n2)[1]
+            profit = int(ligne[2])
+            res[i] = (n1, n2, power, profit)
+    return (res)
+
+
+
+
+
+
 
 
 
