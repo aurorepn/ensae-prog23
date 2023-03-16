@@ -1,4 +1,4 @@
-from graph import Graph, graph_from_file, estimation_duree, kruskal, power_min_arbre_couvrant, duree_routes, sont_relies
+from graph import Graph, graph_from_file, estimation_duree, kruskal, power_min_arbre_couvrant, duree_routes, sont_relies, routes_et_power_from_file, routes_from_file, trajets_realisables_opt1, trajets_realisables_opt2
 import time
 
 #data_path = "input/"
@@ -47,4 +47,6 @@ g_net = graph_from_file("input/network." + str(1) + ".in")
 arbre_net = kruskal(g_net)
 print(arbre_net)
 """
-print(duree_routes(1))
+#print(duree_routes(1))
+
+print(trajets_realisables_opt1(13, 1))

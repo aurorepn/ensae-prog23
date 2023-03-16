@@ -391,7 +391,24 @@ def camions_from_file(file_camion):
     return (res)
 
 
-#La fonction routes_et_power_from_file prend en argument un entier entre 1 et 10 et renvoie la liste des routes figurant sur le fichier routes.x.in sous la forme (départ, arrivée, puissance_min, utilité)
+# La fonction routes_et_power_from_file prend en argument un fichier contenant des routes
+# Elle renvoie la liste des routes figurant sur le fichier routes.x.in sous la forme (départ, arrivée, utilité)
+def routes_from_file(filename):
+    with open(filename) as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        res = [(0,0,0)]*n
+        for i in range(n):
+            ligne = file.readline().split()
+            n1 = int(ligne[0])
+            n2 = int(ligne[1])
+            profit = int(ligne[2])
+            res[i] = (n1, n2, profit)
+    return (res)
+
+
+# La fonction routes_et_power_from_file prend en argument un entier entre 1 et 10
+# Elle renvoie la liste des routes figurant sur le fichier routes.x.in sous la forme (départ, arrivée, puissance_min, utilité)
 def routes_et_power_from_file(x):
     g_net = graph_from_file("input/network." + str(x) + ".in")
     arbre_net = kruskal(g_net)
@@ -406,6 +423,48 @@ def routes_et_power_from_file(x):
             power = power_min_arbre_couvrant(arbre_net, n1, n2)[1]
             profit = int(ligne[2])
             res[i] = (n1, n2, power, profit)
+    return (res)
+
+
+
+"""
+pour une puissance donnée on classe les trajets réalisables par leur profit décroissant et on renvoie la liste correspondante, composée des (profit, n1, n2):
+"""
+
+# Option 1 : utiliser power_min_arbre_couvrant
+def trajets_realisables_opt1(puissance, x):
+    g_net = graph_from_file("input/network." + str(x) + ".in")
+    arbre_net = kruskal(g_net)
+    res = []
+    with open("input/routes." + str(x) + ".in") as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        for i in range(n):
+            ligne = file.readline().split()
+            n1 = int(ligne[0])
+            n2 = int(ligne[1])
+            power = power_min_arbre_couvrant(arbre_net, n1, n2)[1]
+            profit = int(ligne[2])
+            if power <= puissance:
+                res.append((profit, n1, n2))
+            res.sort(reverse=True)
+    return (res)
+
+# Option 2 : utiliser get_path_with_power
+# => pas efficace car la fonction get_path_with_power n'est pas optimisée
+def trajets_realisables_opt2(puissance, x):
+    g = graph_from_file("input/network." + str(x) + ".in")
+    res = []
+    with open("input/routes." + str(x) + ".in") as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        for i in range(n):
+            ligne = file.readline().split()
+            n1 = int(ligne[0])
+            n2 = int(ligne[1])
+            profit = int(ligne[2])
+            if g.get_path_with_power(n1, n2, puissance) is not None:
+                res.append((profit, n1, n2))
     return (res)
 
 
