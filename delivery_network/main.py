@@ -1,4 +1,4 @@
-from graph import Graph, graph_from_file, estimation_duree, kruskal, power_min_arbre_couvrant, duree_routes, sont_relies, routes_et_power_from_file, routes_from_file, trajets_realisables_opt1, trajets_realisables_opt2
+from graph import Graph, graph_from_file, estimation_duree, kruskal, power_min_arbre_couvrant, duree_routes, sont_relies, routes_et_power_from_file, routes_from_file, trajets_realisables_opt1, trajets_realisables_opt2, fonction, camions_from_file
 import time
 
 #data_path = "input/"
@@ -49,4 +49,4 @@ print(arbre_net)
 """
 #print(duree_routes(1))
 
-print(trajets_realisables_opt1(13, 1))
+print(fonction(1, camions_from_file("input/trucks.1.in")))

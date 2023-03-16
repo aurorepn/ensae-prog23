@@ -468,10 +468,53 @@ def trajets_realisables_opt2(puissance, x):
     return (res)
 
 
+# La fonction recherche_dicho prend en argument une puissance, une liste de camions et l'intervalle de cette liste que l'on veut étudier
+# Elle renvoie le coût du camion correspondant à cette puissance
+def recherche_dicho(puissance, camions, debut, fin):
+    n = fin - debut
+    if n==0 or camions[debut + n//2][0] == puissance:
+        return camions[debut + n//2][1]
+    elif camions[debut + n//2][0] < puissance:
+        return recherche_dicho(puissance, camions, n//2 + 1, fin)
+    else:
+        return recherche_dicho(puissance, camions, debut, n//2)
 
 
 
+# La fonction cout_des_routes prend en argument x entre 1 et 10
+# Elle renvoie la liste des routes.x.in sous la forme (depart, arrivée, coût, utilité)
+def cout_des_routes(x, camions):
+    g_net = graph_from_file("input/network." + str(x) + ".in")
+    arbre_net = kruskal(g_net)
+    nb_camions = len(camions)
+    with open("input/routes." + str(x) + ".in") as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        res = [(0,0,0,0)]*n
+        for i in range(n):
+            ligne = file.readline().split()
+            n1 = int(ligne[0])
+            n2 = int(ligne[1])
+            power = power_min_arbre_couvrant(arbre_net, n1, n2)[1]
+            cout = recherche_dicho(power, camions, 0, nb_camions - 1)
+            profit = int(ligne[2])
+            res[i] = (n1, n2, cout, profit)
+    return (res)
 
+
+
+def brute_force(budget, liste_chemins, solution = []):
+    if len(liste_chemins)!=0:
+        utilité1, solution1 = brute_force(budget, liste_chemins[1:],solution)
+        chemin = liste_chemins[0]
+        cout_chemin = chemin[2]
+        if cout_chemin <= budget :
+            utilité2, solution2 = brute_force(budget-cout_chemin, liste_chemins[1:], solution+[chemin])
+            if utilité1<utilité2:
+                return utilité2, solution2
+        return utilité1, solution1
+    else : 
+        return sum([chemin[3] for chemin in solution]), solution
 
 
 
