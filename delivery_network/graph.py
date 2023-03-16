@@ -232,7 +232,7 @@ def graph_from_file(filename):
 
 
 """
-SEANCE 2:
+SEANCE 2
 """
 import time
 
@@ -254,7 +254,7 @@ def estimation_duree(file_routes):
             somme = somme + t1 - t0
     return (n * somme/5)
 
-#Nootre fonction min_power n'est pas assez optimisée, on ne peut donc pas calculer sa durée d'exécution
+#Notre fonction min_power n'est pas assez optimisée, on ne peut donc pas calculer sa durée d'exécution
 
 
 
@@ -264,8 +264,8 @@ def sont_relies(g, n1, n2):
 
     noeuds_vus = {noeud:False for noeud in g.nodes}
 
-#La fonction parcours prend en argument un noeud appelé noeud
-#Elle parcours le graphe g et renvoie True si noeud et n2 sont reliés dans le graphe g et False sinon
+    #La fonction parcours prend en argument un noeud appelé noeud
+    #Elle parcours le graphe g et renvoie True si noeud et n2 sont reliés dans le graphe g et False sinon
     def parcours(noeud):
         for voisin in g.graph[noeud]:
             if voisin[0] == n2:
@@ -366,3 +366,32 @@ def duree_routes(x):
     return (somme)
 
 #On obtient alors pour x=1 une durée d'execution de 0.0026s
+
+
+
+
+
+"""
+SEANCE 3
+"""
+
+budget = 25 * 10^9
+
+#La fonction camions_from_file prend en argument un fichier et renvoie la liste des camions figurant sur ce fichier sous la forme (puissance, prix)
+def camions_from_file(file_camion):
+    with open(file_camion) as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        res = [(0,0)]*n
+        for i in range(n):
+            ligne = file.readline().split()
+            power = int(ligne[0])
+            prix = int(ligne[1])
+            res[i] = (power, prix)
+    return (res)
+
+
+
+
+
+
