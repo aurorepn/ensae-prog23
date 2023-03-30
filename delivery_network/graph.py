@@ -521,27 +521,28 @@ def brute_force(budget, liste_chemins, solution = []):
 
 
 
-def sac_a_dos(budget, liste_chemins, cout_min_chemin):
+def sac_a_dos(budget, liste_chemins):
     liste_chemins.sort(key=lambda x: -x[1])
-    u = budget%cout_min_chemin
+    cout_min_chemin = liste_chemins[-1][1]
+    u = budget//cout_min_chemin
     v = len(liste_chemins)+1 
     matrice = [[0 for k in range(u)] for i in range(v)]
-    for i in ranger(1,v) :
+    for i in range(1,v) :
         for k in range(1,u):
             if liste_chemins[i-1][1]/cout_min_chemin <= k:
-                matrice[i][k] = max(liste_chemins[i-1][2]+matrice[i-1][k-liste_chemins[i-1][1]], matrice[i-1][k])
+                matrice[i][k] = max(liste_chemins[i-1][2]+matrice[i-1][k-liste_chemins[i-1][1]//cout_min_chemin], matrice[i-1][k])
             else :
                 matrice[i][k] = matrice[i-1][k]
     
     solution = []
     pas = cout_min_chemin
-    nouveau_budget = budget%pas
+    nouveau_budget = budget//pas
     N = v-1
-    while nouveau_budget>=0 and N>=0:
+    while nouveau_budget>=0 and N>0:
         x = liste_chemins[N-1]
-        if matrice[N][nouveau_budget] == matrice[N-1][nouveau_budget-x[1]]+x[2]:
+        if matrice[N][nouveau_budget] == matrice[N-1][nouveau_budget-x[1]//pas] + x[2]:
             solution.append(x)
-            w -= x[1]
+            nouveau_budget -= x[1]//pas
         N -= 1
     return matrice[-1][-1], solution
 
