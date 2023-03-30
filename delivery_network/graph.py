@@ -130,7 +130,7 @@ class Graph:
 
         return licomponents
 
-#cout de la fonction exploration : C(n,m) = O(1) + nb_voisins(s) * cout(exploration)
+#cout de la fonction de parcours en profondeur : C(n,m) = O(1) + nb_voisins(s) * cout(exploration)
 #pour n sommets et m arêtes
 
 
