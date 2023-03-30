@@ -276,7 +276,7 @@ def sont_relies(g, n1, n2):
                     return True
         return False
 
-#On évalue cette fonction en n1
+    #On évalue cette fonction en n1
     return (parcours(n1))
 
 
@@ -503,6 +503,9 @@ def cout_des_routes(x, camions):
 
 
 
+# La fonction brute_force prend en argument le budget, la liste de routes sous la forme renvoyée par la fonction cout_des_routes (((n1, n2), cout, profit)) et la solution initialisée à []
+# Elle renvoie l'utilité maximale que l'on peut obtenir avec le budget donné et la liste des routes qu'il faut prendre pour maximiser cette utilité
+# (C'est une fonction récursive)
 def brute_force(budget, liste_chemins, solution = []):
     if len(liste_chemins)!=0:
         utilité1, solution1 = brute_force(budget, liste_chemins[1:],solution)
@@ -541,4 +544,4 @@ def sac_a_dos(budget, liste_chemins, cout_min_chemin):
             w -= x[1]
         N -= 1
     return matrice[-1][-1], solution
-"""
+
