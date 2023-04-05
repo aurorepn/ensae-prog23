@@ -507,17 +507,17 @@ def cout_des_routes(x, camions):
 # Elle renvoie l'utilité maximale que l'on peut obtenir avec le budget donné et la liste des routes qu'il faut prendre pour maximiser cette utilité
 # (C'est une fonction récursive)
 def brute_force(budget, liste_chemins, solution = []):
-    if len(liste_chemins)!=0:
+    if len(liste_chemins)!=0: #condition d'arrêt de l'algorithme récursif : il n'y a plus de chemins à traiter
         utilité1, solution1 = brute_force(budget, liste_chemins[1:],solution)
         chemin = liste_chemins[0]
         cout_chemin = chemin[1]
-        if cout_chemin <= budget :
+        if cout_chemin <= budget : #on vérifie que le cout du chemin traité ne dépasse pas le budget restant
             utilité2, solution2 = brute_force(budget-cout_chemin, liste_chemins[1:], solution+[chemin])
-            if utilité1<utilité2:
+            if utilité1<utilité2: #on compare les 2 utilités et on retourne le meilleur choix
                 return utilité2, solution2
         return utilité1, solution1
     else : 
-        return sum([chemin[2] for chemin in solution]), solution
+        return sum([chemin[2] for chemin in solution]), solution #on retourne la solution et l'utilité associée
 
 
 
@@ -546,3 +546,60 @@ def sac_a_dos(budget, liste_chemins):
         N -= 1
     return matrice[-1][-1], solution
 
+def sac_a_dos(budget, liste_chemins):
+    liste_chemins.sort(key=lambda x: -x[1])
+#on trie la liste des chemins par ordre décroissant des coûts
+    cout_min_chemin = liste_chemins[-1][1]
+    u = budget//cout_min_chemin #on normalise le budget par le cout minimal des chemins pour diminuer la taille de la matrice créée
+    v = len(liste_chemins)+1
+    matrice = [[0 for k in range(u+1)] for i in range(v)]
+
+    for i in range(1,v) :
+
+        for k in range(1,u+1):
+#pour chaque chemin, on parcourt la capacité totale normalisée par le coût minimal des chemins
+
+            if liste_chemins[i-1][1]/cout_min_chemin <= k:
+
+                matrice[i][k] = max(liste_chemins[i-1][2]+matrice[i-1][k-(liste_chemins[i-1][1]//cout_min_chemin)], matrice[i-1][k])
+
+            else :
+
+                matrice[i][k] = matrice[i-1][k]
+#on compare le résultat optimisé de la ligne précédente avec le résultat de la ligne considérée pour conserver la meilleure solution
+
+    
+
+    solution = []
+
+    pas = cout_min_chemin
+
+    nouveau_budget = u
+
+    cout = 0
+
+    N = v-1
+
+    while nouveau_budget>=0 and N>0:
+#on retrouve la solution à partir de la matrice créée et l'utilité associée
+
+        x = liste_chemins[N-1]
+
+        if matrice[N][nouveau_budget] == matrice[N-1][nouveau_budget-(x[1]//pas)]+x[2]:
+#comme la matrice est optimisée pour chaque ligne, on crée la liste des solutions
+
+            solution.append(x)
+
+            nouveau_budget -= (x[1]//pas)
+
+            cout += x[1]
+
+        N -= 1
+
+    if cout <= budget :
+
+        return matrice[-1][-1], solution #on regarde si la solution a un coût inférieur au budget
+
+    else :
+
+        return matrice[-1][-2], solution[:-1]
