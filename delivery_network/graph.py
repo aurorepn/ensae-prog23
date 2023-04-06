@@ -190,6 +190,38 @@ class Graph:
         return (chemin, puissmin)
 
 
+    def get_path_with_powerbonus(self, source, dest, power):
+
+        def fonc(start, pasacces):
+            l = []
+            pasacces.append(start)
+            for voisin in self.graph[start]:
+                if voisin[0] not in pasacces:
+                    if voisin[1] > power:
+                        return fonc(start, pasacces + [voisin[0]])
+                    else:
+                        if voisin[0] == dest:
+                            l.append((voisin[2], [voisin[0]]))
+                        else:
+                            x, y = fonc(voisin[0], pasacces + [voisin[0]])
+                            l.append((x+voisin[2], y))
+            n = len(l)
+            if n > 0:
+                distmin = l[0][0]
+                noeudmin = 0
+                for i in range(n):
+                    if l[i][0] < distmin:
+                        distmin = l[i][0]
+                        noeudmin = i
+                return (distmin, [start] + l[noeudmin][1])
+            else:
+                return (float("inf"), [])
+
+        return fonc(source, [])[1]
+
+
+
+
 def graph_from_file(filename):
     """
     Reads a text file and returns the graph as an object of the Graph class.

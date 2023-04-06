@@ -105,4 +105,8 @@ print(len(sac_a_dos(budget, li)[1]))
 print(len(li))
 """
 
-print(sac_a_dos(budget, li))
+#print(sac_a_dos(budget, li))
+
+g  =graph_from_file("input/network.04.in")
+
+print(g.get_path_with_powerbonus(1, 2, 5))
