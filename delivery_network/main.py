@@ -107,6 +107,6 @@ print(len(li))
 
 #print(sac_a_dos(budget, li))
 
-g  =graph_from_file("input/network.04.in")
+g  =graph_from_file("input/network.03.in")
 
-print(g.get_path_with_powerbonus(2, 1, 3))
+print(g.get_path_with_powerbonus(1, 4, 9))

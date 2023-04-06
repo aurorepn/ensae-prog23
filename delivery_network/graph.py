@@ -197,9 +197,9 @@ class Graph:
             pasacces.append(start)
             for voisin in self.graph[start]:
                 if voisin[0] not in pasacces:
-                    if voisin[1] > power:
-                        return fonc(start, pasacces + [voisin[0]])
-                    else:
+                    #if voisin[1] > power:
+                     #   return fonc(start, pasacces + [voisin[0]])
+                    if voisin[1] <= power:
                         if voisin[0] == dest:
                             l.append((voisin[2], [voisin[0]]))
                         else:
