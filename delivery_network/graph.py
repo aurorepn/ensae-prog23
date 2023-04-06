@@ -217,7 +217,9 @@ class Graph:
             else:
                 return (float("inf"), [])
 
-        return fonc(source, [])[1]
+        a,b = fonc(source, [])
+        if a < float("inf"):
+            return fonc(source, [])[1]
 
 
 

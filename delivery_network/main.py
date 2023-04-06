@@ -109,4 +109,4 @@ print(len(li))
 
 g  =graph_from_file("input/network.04.in")
 
-print(g.get_path_with_powerbonus(1, 2, 5))
+print(g.get_path_with_powerbonus(2, 1, 3))
