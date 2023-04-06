@@ -197,8 +197,6 @@ class Graph:
             pasacces.append(start)
             for voisin in self.graph[start]:
                 if voisin[0] not in pasacces:
-                    #if voisin[1] > power:
-                     #   return fonc(start, pasacces + [voisin[0]])
                     if voisin[1] <= power:
                         if voisin[0] == dest:
                             l.append((voisin[2], [voisin[0]]))
@@ -334,7 +332,7 @@ def kruskal(g):
         #Pour chaque arête de g, si les noeuds ne sont pas déjà reliés, on ajoute l'arête à g_res :
         if arete[1] not in g_res.nodes or arete[2] not in g_res.nodes or not sont_relies(g_res, arete[1], arete[2]):
             g_res.add_edge(arete[1], arete[2], arete[0])
-    #Cette deuxième partie de la fonction est en O(m^2) où m est le nombre d'arêtes du graphe
+    #Cette deuxième partie de la fonction est en O(m^2) où m est le nombre d'arêtes du graphe car la fonction sont_relies est en O(m)
 
     return g_res
 
@@ -352,6 +350,7 @@ def power_min_arbre_couvrant(arbre, n1, n2):
         return ([n1], 0)
 
     #On commence par tester si arbre est bien un arbre ie que arbre est connexe (sinon on renvoie une puissance infinie)
+    #Ce test est en O(m)
     if not sont_relies(arbre, n1, n2):
         return ([], float("inf"))
     #La fonction f_rec prend en argument un noeud start et une liste de noeuds noeuds_vus
