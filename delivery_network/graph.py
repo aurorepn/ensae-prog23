@@ -535,6 +535,25 @@ def cout_des_routes(x, camions):
     return (res)
 
 
+def cout_des_routesbis(x, camions):
+    g_net = graph_from_file("input/network." + str(x) + ".in")
+    arbre_net = kruskal(g_net)
+    nb_camions = len(camions)
+    with open("input/routes.a.in") as file:
+        ligne1 = file.readline().split()
+        n = int(ligne1[0])
+        res = [(0,0,0,0)]*n
+        for i in range(n):
+            ligne = file.readline().split()
+            n1 = int(ligne[0])
+            n2 = int(ligne[1])
+            power = power_min_arbre_couvrant(arbre_net, n1, n2)[1]
+            cout = recherche_dicho(power, camions, 0, nb_camions - 1)
+            profit = int(ligne[2])
+            res[i] = ((n1, n2), cout, profit)
+    return (res)
+
+
 
 # La fonction brute_force prend en argument le budget, la liste de routes sous la forme renvoyée par la fonction cout_des_routes (((n1, n2), cout, profit)) et la solution initialisée à []
 # Elle renvoie l'utilité maximale que l'on peut obtenir avec le budget donné et la liste des routes qu'il faut prendre pour maximiser cette utilité
@@ -617,4 +636,13 @@ def sac_a_dos(budget, liste_chemins):
     if cout <= budget :
         return matrice[-1][-1], solution #on regarde si la solution a un coût inférieur au budget
     else :
+        nouveau_budget = u-1
+        N = v-1
+        while nouveau_budget>=0 and N>0:
+            x = liste_chemins[N-1]
+            if matrice[N][nouveau_budget] == matrice[N-1][nouveau_budget-(x[1]//pas)]+x[2]:
+                solution.append(x)
+                nouveau_budget -= (x[1]//pas)
+                cout += x[1]
+            N -= 1
         return matrice[-1][-2], solution[:-1]

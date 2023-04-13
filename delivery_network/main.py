@@ -1,7 +1,7 @@
 from graph import Graph, graph_from_file, estimation_duree, kruskal, power_min_arbre_couvrant, duree_routes, sont_relies, routes_et_power_from_file, routes_from_file, trajets_realisables_opt1, trajets_realisables_opt2, camions_from_file, cout_des_routes
 import time
 
-from graph import camions_from_file, brute_force, sac_a_dos
+from graph import camions_from_file, brute_force, sac_a_dos, cout_des_routesbis
 #data_path = "input/"
 #file_name = "network.01.in"
 
@@ -105,5 +105,14 @@ print(len(sac_a_dos(budget, li)[1]))
 print(len(li))
 """
 
-print(sac_a_dos(budget, li))
+camions = camions_from_file("input/trucks.1.in")
 
+liste00 = cout_des_routesbis('00', camions)
+
+
+#print(brute_force(25*10**9, liste00))
+
+liste1b = cout_des_routes(1, camions)
+#print(liste1a)
+
+print(sac_a_dos(25*10**9, liste1b))
